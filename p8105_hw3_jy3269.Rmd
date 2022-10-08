@@ -117,15 +117,23 @@ head(ny_noaa)
 ```
 
 
-### 1. clean  data
+### 2. clean  data
 ```{r}
-ny_noaa %>% 
-  separate(date,into=c("year","month","day"),sep="-") 
+ny_noaa <- ny_noaa %>% 
+  separate(date,into = c("year","month","day"),sep="-") %>% 
+  mutate(
+    year = as.numeric(year),
+    month = as.integer(month),
+    day = as.numeric(day),
+    tmax = as.numeric(tmax)
+  )
+
+ny_noaa
   
 ```
 
 
-### 2. snowfall
+### 3. snowfall
 ```{r}
 ny_noaa %>% 
   group_by(snow) %>% 
@@ -134,8 +142,14 @@ ny_noaa %>%
 
 ```
 
+### 4. plot mean tmax
 ```{r}
-
+ny_noaa %>% 
+  filter(month == c(7)) %>% 
+  group_by(id) %>% 
+  mutate(mean_tmax = mean(tmax,na.rm = TRUE)) %>% 
+  ggplot(aes(y = mean_tmax,fill = year))+
+  geom_histogram()
 
 ```
 
