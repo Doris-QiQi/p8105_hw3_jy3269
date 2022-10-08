@@ -96,28 +96,41 @@ acc_1 %>%
 
 
 
-
 ### 5. plot daily activity
 ```{r}
 acc_1 %>%  
   group_by(day_id) %>%
-  ggplot(aes(x=minute,y=activity_counts,color=day))+
-  geom_point()+geom
+  ggplot(aes(x = minute,y = activity_counts,color = day)) +
+  geom_point() + geom
   
 ```
 
+
+
+
+## Problem 3
+
+### 1. load `ny_noaa` data set
 ```{r}
-
-
+data("ny_noaa")
+head(ny_noaa)
 ```
 
+
+### 1. clean  data
 ```{r}
-
-
+ny_noaa %>% 
+  separate(date,into=c("year","month","day"),sep="-") 
+  
 ```
 
-```{r}
 
+### 2. snowfall
+```{r}
+ny_noaa %>% 
+  group_by(snow) %>% 
+  summarise(counts = n()) %>%  # count the occurrence of each observed snowfall data
+  arrange(desc(counts))        # arrange the counts in descending order to find the most frequent ones
 
 ```
 
