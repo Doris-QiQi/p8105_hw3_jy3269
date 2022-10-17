@@ -51,29 +51,22 @@ Description:
 
 
 
-
-### 3. total activity each day
-
-```{r}
-acc_1 %>% 
-  group_by(day_id) %>% 
-  mutate(total_activity = sum(activity_counts))     # add a column to store the daily sum
-
-```
-
-
-
-
-### 4. make a table
-
+### 3. calculate total activity each day + make a table
 
 ```{r}
 acc_1 %>% 
-  group_by(day_id) %>% 
-  summarize(total_activity = sum(activity_counts)) %>% 
-  knitr::kable()    # make an r table
+  group_by(week,day) %>% 
+  mutate(total_activity = sum(activity_counts)) %>% 
+  arrange(week, day) %>%
+  pivot_wider(
+    names_from = day,
+    values_from = total_activity
+  ) %>%
+  knitr::kable()
+  
 
 ```
+
 
 
 
@@ -82,7 +75,16 @@ acc_1 %>%
 acc_1 %>%  
   group_by(day_id) %>%
   ggplot(aes(x = minute,y = activity_counts,color = day)) +
-  geom_point() + geom
+  geom_line(alpha=.5) + 
+  theme(legend.position = "bottom")+
+  labs(
+    title = "Daily Activity",
+    x = "Time in a Day",
+    y = "Activity Count")+
+  scale_x_continuous(
+    breaks = c(0,180,360,540,720,900,1080,1260,1440),
+    labels = c("12AM","3AM","6AM","9AM","12PM","3PM","6PM","9PM","12AM"),
+    limits = c(0,1440))
   
 ```
 
