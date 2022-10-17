@@ -137,11 +137,12 @@ Description:
 ```{r}
 data("ny_noaa")
 
-num_weather_station <- length(unique(ny_noaa$id))       # number of missing values
+num_weather_station <- length(unique(ny_noaa$id))  # number of missing values
 
-no_missing = na.omit(ny_noaa)    # data removed of the NAs
+no_missing = na.omit(ny_noaa)                      # data removed of the NAs
 num_no_missing <- nrow(no_missing)                 # number of rows without missing values
 missing_ proportion <- (nrow(ny_noaa) - nrow(no_missing))/nrow(ny_noaa)*100   # missing proportion
+
 
 # missing proportion in each variables
 ny_noaa %>% 
@@ -215,6 +216,7 @@ Another supplementary reason why New York does not snow very often even in winte
 
 
 ### 4. plot mean tmax
+
 ```{r}
 noaa %>%
   filter(month == 'January' | month == 'July') %>%
@@ -222,7 +224,7 @@ noaa %>%
   summarize(mean_tmax = mean(tmax, na.rm = TRUE)) %>%
   ggplot(aes(x = year, y = mean_tmax, color = month)) +
   geom_point(alpha = .2) +
-  geom_smooth(se = F,color="black") +
+  geom_smooth(se = F,color = "black")+    # add a black line to show the trend
   facet_grid(~month) +
   labs(x = "Year",
        y = "Average Max Temperature (C)",
@@ -231,8 +233,15 @@ noaa %>%
   theme(legend.position = "bottom")
 
 ```
+Description:
 
-
+*  The mean tmax in January is much lower than that in July. 
+*  The range of mean tmax in January is around -10 to 10 (degree C), in July is around 20 to 35 (degree C). Thus, Jan has a larger range than July.
+*  There are outliers in both January and July. 
+*  In January, there are extremely low mean tmax lower than -10 and extremely high mean tmax above 10. 
+*  In July, there are also extremely high mean tmax close to 35 and extremely low mean tmax lower than 15.
+*  The average mean tmax in January across the years is centered around 0 degree C, while that in July the average is centered around 27 degree C.
+*  We can tell from the black line that the mean tax in January fluctuates more wildly than that in July.
 
 
 ```{r}
