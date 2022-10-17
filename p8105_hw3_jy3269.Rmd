@@ -27,7 +27,8 @@ acc_1 <- data_1 %>%
   mutate(
     week = as.integer(week),
     day_id = as.integer(day_id),
-    day = factor(day),
+    day = factor(day,levels= c("Monday", 
+    "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday","Sunday")),
     weekday_vs_weekend = if_else(day == "Saturday" | day == "Sunday","weekend","weekday") # new variable indicate whether the day is weekend or weekday
   ) %>% 
   pivot_longer(                          # switch the data set from wider to longer
@@ -35,7 +36,7 @@ acc_1 <- data_1 %>%
     names_to = "minute",                 # activity_number in previous column names indicate the minute       
     names_prefix = "activity_",          # remove the activity_ prefix and preserve the number
     values_to = "activity_counts") %>%   # store the observed data in a new column names activity_counts
-  mutate(minute = as.integer(minute))    # change the data class
+  mutate(minute = as.integer(minute))    # change data type
 
 acc_1
 ```
@@ -56,13 +57,14 @@ Description:
 ```{r}
 acc_1 %>% 
   group_by(week,day) %>% 
-  mutate(total_activity = sum(activity_counts)) %>% 
-  arrange(week, day) %>%
+  summarize(total_activity = sum(activity_counts)) %>% 
+  arrange(week,day) %>%  # organize data in a tidy order
   pivot_wider(
     names_from = day,
     values_from = total_activity
-  ) %>%
+  ) %>% 
   knitr::kable()
+  
   
 
 ```
