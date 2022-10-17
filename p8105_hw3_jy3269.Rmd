@@ -7,7 +7,10 @@ output: github_document
 
 ```{r,warning=FALSE, message=FALSE}
 library(tidyverse)
+library(ggridges)
+library(patchwork)
 library(p8105.datasets)
+
 ```
 
 ## Problem 2
@@ -244,26 +247,40 @@ Description:
 *  We can tell from the black line that the mean tax in January fluctuates more wildly than that in July.
 
 
+
+## 5. plot tmax vs tmin +  distribution of snowfall
+
 ```{r}
+tmax_tmin_plot <-                       # tmax vs tmin
+  noaa %>% 
+  ggplot(aes(x = tmax,y = tmin)) +
+  geom_hex() +                          # use a hexagon plot
+  geom_smooth(se = FALSE,na.rm = TRUE)
+  labs(
+    x = "tmax (degree C)",
+    y = "tmin (degree C)",
+    title = "tmax vs tmin ",
+    caption = "Data from ny_noaa"
+  )
+  
+snow_density_plot <-                    # snow density
+  noaa %>% 
+  filter(snow > 0 & snow < 100) %>% 
+  mutate(year = as.factor(year)) %>% 
+  ggplot(aes(x = snow, y = year,fill = year)) +
+  geom_density_ridges() +
+  labs(
+    y = "Year",
+    x = "Snowfall (mm)",
+    title = "The distribution of snowfall",
+    caption = "Data from ny_noaa") +
+  theme_ridges() + theme(legend.position = "none")
+
+
+tmax_tmin_plot + snow_density_plot
 
 
 ```
-
-```{r}
-
-
-```
-
-```{r}
-
-
-```
-
-```{r}
-
-
-```
-
 
 
 
