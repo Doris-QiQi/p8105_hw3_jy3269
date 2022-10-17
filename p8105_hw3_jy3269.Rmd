@@ -137,19 +137,17 @@ Description:
 ```{r}
 data("ny_noaa")
 
-length(unique(ny_noaa$id))       # number of missing values
+num_weather_station <- length(unique(ny_noaa$id))       # number of missing values
 
 no_missing = na.omit(ny_noaa)    # data removed of the NAs
-nrow(no_missing)                 # number of rows without missing values
-(nrow(ny_noaa)-nrow(no_missing))/nrow(ny_noaa)*100   # missing proportion
+num_no_missing <- nrow(no_missing)                 # number of rows without missing values
+missing_ proportion <- (nrow(ny_noaa) - nrow(no_missing))/nrow(ny_noaa)*100   # missing proportion
 
 # missing proportion in each variables
 ny_noaa %>% 
   summarise_at(vars(prcp:tmin), .funs = function(x) mean(is.na(x))) %>%
-  round(digits=3) %>% 
+  round(digits = 3) %>% 
   knitr::kable()
-
- 
 
 ```
 
@@ -171,24 +169,28 @@ Description of the raw dataset `ny_noaa`:
 The missing value problem:
 *  There are a total of `r nrow(ny_noaa)-nrow(no_missing)` rows that contains missing data, which is `r (nrow(ny_noaa)-nrow(no_missing))/nrow(ny_noaa)*100`% of the total observations. 
 *  It means that more than half of the `ny_noaa` data set have missing values.Therefore, missing data is a big issue. 
-*  The missing value proportion of the 5 key variables are shown in the table.
+*  The missing value proportion of the 5 key variables are shown in the table : 44% missing for max and min temperature , 23% for snow depth, 15% for snow, and 6% for precipitation.
 
 
 
 ### 2. clean  data
 ```{r}
-ny_noaa <- ny_noaa %>% 
-  separate(date,into = c("year","month","day"),sep="-") %>% 
+noaa <- ny_noaa %>%
+  janitor::clean_names() %>%
+  separate(date, c("year", "month", "day"), sep = "-", convert = TRUE) %>%
   mutate(
-    year = as.numeric(year),
-    month = as.integer(month),
-    day = as.numeric(day),
-    tmax = as.numeric(tmax)
-  )
-
-ny_noaa
-  
+    month = month.name[as.integer(month)],
+    prcp = prcp / 10,
+    tmax = as.numeric(tmax) / 10, 
+    tmin = as.numeric(tmin) / 10
+    )
+noaa
 ```
+
+
+*  `noaa` has `r nrow(noaa)` rows and `r ncol(noaa)` columns.
+*  The variables in `noaa` are : `r names(noaa)`
+*  the units of precipitation, min and max temperature  are adjusted.
 
 
 ### 3. snowfall
