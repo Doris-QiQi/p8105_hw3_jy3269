@@ -193,14 +193,24 @@ noaa
 *  the units of precipitation, min and max temperature  are adjusted.
 
 
+
 ### 3. snowfall
 ```{r}
-ny_noaa %>% 
+noaa %>% 
   group_by(snow) %>% 
-  summarise(counts = n()) %>%  # count the occurrence of each observed snowfall data
-  arrange(desc(counts))        # arrange the counts in descending order to find the most frequent ones
+  summarise(frequency = n()) %>%  # count the occurrence of each observed snowfall data
+  arrange(desc(frequency))        # arrange the data in descending order to find the most frequent ones
 
 ```
+
+The most commonly observed values of snowfall variable in the data set is 0, which implies that there is no snow for most of the time in New York.
+
+
+One reason for this is that winter only takes up a small proportion of the time range for the observations. And New York almost only snows in winter.
+
+
+Another supplementary reason why New York does not snow very often even in winter is that the climate of New York state is humid continental. The average winter temperature is below 0 during January and February in most cities in the state. But it is usually several degrees above 0 along the Atlantic coastline, including New York City, making it hard to snow.
+
 
 ### 4. plot mean tmax
 ```{r}
