@@ -27,6 +27,7 @@ acc_1 <- data_1 %>%
   mutate(
     week = as.integer(week),
     day_id = as.integer(day_id),
+    day = factor(day),
     weekday_vs_weekend = if_else(day == "Saturday" | day == "Sunday","weekend","weekday") # new variable indicate whether the day is weekend or weekday
   ) %>% 
   pivot_longer(                          # switch the data set from wider to longer
@@ -39,30 +40,16 @@ acc_1 <- data_1 %>%
 acc_1
 ```
 
-```{r}
-acc_2 <- data_1 %>% 
-  janitor::clean_names() %>% 
-  mutate(
-    week = as.integer(week),
-    day_id = as.integer(day_id),
-    weekday_vs_weekend = if_else(day == "Saturday" | day == "Sunday","weekend","weekday") # new variable indicate whether the day is weekend or weekday
-  ) %>% 
-  select(week,day_id,day,weekday_vs_weekend,everything())
+Description:
 
-acc_2
+*  structure of the data set:
+  * the acc_1
 
-```
+
 
 
 
 ### 3. total activity each day
-```{r}
-acc_2 %>% 
-  group_by(day_id) %>% 
-  mutate(total_activity = sum(activity_1:activity_1440)) %>%     # add a column to store the daily sum
-  select(week,day_id,day,weekday_vs_weekend,total_activity,everything()) # show the new column at the front
-
-```
 
 
 ```{r}
@@ -76,14 +63,6 @@ acc_1 %>%
 
 
 ### 4. make a table
-
-```{r}
-acc_2 %>% 
-  group_by(day_id) %>% 
-  summarize(total_activity = sum(activity_1:activity_1440)) %>% 
-  knitr::kable()    # make an r table
-
-```
 
 
 ```{r}
