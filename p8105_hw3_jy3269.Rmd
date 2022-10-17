@@ -281,7 +281,11 @@ tmax_tmin_plot + snow_density_plot
 
 
 ```
-
+Description:
+*  The left figure is a plot of tmax vs tmin from 1980 to 2010. It shows that most of the points fall into the center of the plot, where tmax ranges from 0 to 30 and tmin ranges from -10 to 15.
+* The right figure is the distribution of snowfall over the years and each curve represents a year. 
+* Although the distribution of snow are slightly different from year to year, they all share a similar pattern. 
+* The pattern shows that : the highest density is between 0 mm to 25 mm, and the lowest is greater than 90 mm. It means that the snowfall is usually between 0 mm to 25 mm and rarely over 90 mm.
 
 
 
