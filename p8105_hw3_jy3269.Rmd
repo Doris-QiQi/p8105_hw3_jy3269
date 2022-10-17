@@ -133,13 +133,24 @@ Description:
 
 ## Problem 3
 
-### 1. load `ny_noaa` data set
+### 1. load `ny_noaa` data set and explore its structure
 ```{r}
 data("ny_noaa")
-head(ny_noaa)
+
+length(unique(ny_noaa$id))       # number of missing values
 
 no_missing = na.omit(ny_noaa)    # data removed of the NAs
-nrow(no_missing)
+nrow(no_missing)                 # number of rows without missing values
+(nrow(ny_noaa)-nrow(no_missing))/nrow(ny_noaa)*100   # missing proportion
+
+# missing proportion in each variables
+ny_noaa %>% 
+  summarise_at(vars(prcp:tmin), .funs = function(x) mean(is.na(x))) %>%
+  round(digits=3) %>% 
+  knitr::kable()
+
+ 
+
 ```
 
 Description of the raw dataset `ny_noaa`:
@@ -152,16 +163,15 @@ Description of the raw dataset `ny_noaa`:
   * snwd: Snow depth (mm)
   * tmax: Maximum temperature (tenths of degrees C)
   * tmin: Minimum temperature (tenths of degrees C)
+*  The key variables are `prcp` `snow` `snwd` `tmax` and `tmin`
 *  The observations ranging from 1981-01-01 to 2010-12-31
-*  Overall, `ny_noaa` contains all the information from each weather station for each day and the date ranges from  of January 1st 1981 to December 31st 2010. The data contains a lot of missing values. 
+*  There are `r length(unique(ny_noaa$id))` different weather stations.
 
 
 The missing value problem:
-*  There are a total of `r nrow(ny_noaa)-nrow(no_missing)` rows that contains missing data, which is `r nrow(no_missing)/nrow(ny_noaa)*100`% of the total observations. 
-*  It means that nearly half of the `ny_noaa` data set have missing values.
-
-
-Therefore, missing data is a big issue. However, since the observation left is `r nrow(no_missing)`, which is big enough, removing the missing rows will not have a big problem as there are still enough data to draw conclusions
+*  There are a total of `r nrow(ny_noaa)-nrow(no_missing)` rows that contains missing data, which is `r (nrow(ny_noaa)-nrow(no_missing))/nrow(ny_noaa)*100`% of the total observations. 
+*  It means that more than half of the `ny_noaa` data set have missing values.Therefore, missing data is a big issue. 
+*  The missing value proportion of the 5 key variables are shown in the table.
 
 
 
