@@ -19,7 +19,7 @@ data_1
 
 ```
 
-### 2. clean and wrangle data
+### 2. clean, tidy and wrangle data
 
 ```{r}
 acc_1 <- data_1 %>% 
@@ -58,7 +58,7 @@ Description:
 acc_1 %>% 
   group_by(week,day) %>% 
   summarize(total_activity = sum(activity_counts)) %>% 
-  arrange(week,day) %>%  # organize data in a tidy order
+  arrange(week,day) %>%       # organize data in a tidy order
   pivot_wider(
     names_from = day,
     values_from = total_activity
@@ -66,8 +66,41 @@ acc_1 %>%
   knitr::kable()
   
   
+```
+
+
+Description of the table :
+*  The daily total activities tend to fluctuate within each week, thus there is no obvious trends.
+*  The daily total activity counts on Saturday in Week 4 and 5 are both 1440 which means the activity counts is 1 for each minute. The data seems abnormal. I suppose that there might be something wrong with the Accelerator that makes it unable to collect data correctly.
+
+
+To better discover the trends during each week, we may make a plot.
+
+
+# 4. Plot the trend of each week
+```{r}
+acc_1 %>% 
+  group_by(week,day) %>% 
+  summarize(total_activity = sum(activity_counts)) %>% 
+  arrange(week,day) %>%                             # use part of the code from making the previous table
+  ggplot(aes(x = day, y = total_activity, color = week, group = week)) +
+  geom_point() + geom_line() + facet_grid(~week) +  # place the 5 plots in a row in the order of weeks
+  labs(
+  title = "Activity Trend",
+  x = "Day",
+  y = "Daily Total Activity") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), 
+        legend.position = "none")
+
 
 ```
+
+
+Description of the trend plot:
+* In week 1 and 2, the total activity per day increases from Monday to Friday.
+* In Week 3 and 4, the fluctuations are more irregular.
+* Week 5 shows an approximately increasing trend from Monday to Friday.
+* The abnormal data on the Saturday of Week 4 and 5 is more obvious in the plot.
 
 
 
@@ -84,8 +117,8 @@ acc_1 %>%
     x = "Time in a Day",
     y = "Activity Count")+
   scale_x_continuous(
-    breaks = c(0,180,360,540,720,900,1080,1260,1440),
-    labels = c("12AM","3AM","6AM","9AM","12PM","3PM","6PM","9PM","12AM"),
+    breaks = c(0,180,360,540,720,900,1080,1260,1440),   # set the breaks of minutes in a day
+    labels = c("12AM","3AM","6AM","9AM","12PM","3PM","6PM","9PM","12AM"),  # more readable x-axis labels
     limits = c(0,1440))
   
 ```
