@@ -44,10 +44,10 @@ acc_1
 Description:
 
 *  structure of the data set:
-  * the `acc_1` data set has  `r nrow(acc_1)` rows (observations) and `r ncol(acc_1)` columns (variables)
-  * the variables in `acc_1` include : `r names(acc_1)`
+  * the `acc_1` data set has  `r nrow(acc_1)`  rows (observations) and  `r ncol(acc_1)` columns (variables)
+  * the variables in `acc_1` include :  `r names(acc_1)`
   * the `weekday_vs_weekend` variable is a new one added to the original data set, showing whether the day is a weekday or a weekend.
-  * the original data set `data_1` has `r ncol(data_1)` variables. The last 1440 columns are the activity counts of each minute in a day. 
+  * the original data set `data_1` has  `r ncol(data_1)`  variables. The last 1440 columns are the activity counts of each minute in a day. 
   * We used `pivot_longer` to transform the 1440 columns to store the data in a new variable named `activity_counts` and specify the minute each data belongs to in a new variable named `minute`.
 
 
@@ -104,13 +104,12 @@ Description of the trend plot:
 
 
 
-
 ### 5. plot daily activity
 ```{r}
 acc_1 %>%  
   group_by(day_id) %>%
   ggplot(aes(x = minute,y = activity_counts,color = day)) +
-  geom_line(alpha=.5) + 
+  geom_line(alpha=.7) +
   theme(legend.position = "bottom")+
   labs(
     title = "Daily Activity",
@@ -132,14 +131,38 @@ Description:
 
 
 
-
 ## Problem 3
 
 ### 1. load `ny_noaa` data set
 ```{r}
 data("ny_noaa")
 head(ny_noaa)
+
+no_missing = na.omit(ny_noaa)    # data removed of the NAs
+nrow(no_missing)
 ```
+
+Description of the raw dataset `ny_noaa`:
+*  `ny_noaa` has  `r nrow(ny_noaa)` observations and  `r ncol(ny_noaa)` variables.
+*  The variables are : names(ny_noaa)
+  * id: Weather station ID
+  * date: Date of observation
+  * prcp: Precipitation (tenths of mm)
+  * snow: Snowfall (mm)
+  * snwd: Snow depth (mm)
+  * tmax: Maximum temperature (tenths of degrees C)
+  * tmin: Minimum temperature (tenths of degrees C)
+*  The observations ranging from 1981-01-01 to 2010-12-31
+*  Overall, `ny_noaa` contains all the information from each weather station for each day and the date ranges from  of January 1st 1981 to December 31st 2010. The data contains a lot of missing values. 
+
+
+The missing value problem:
+*  There are a total of `r nrow(ny_noaa)-nrow(no_missing)` rows that contains missing data, which is `r nrow(no_missing)/nrow(ny_noaa)*100`% of the total observations. 
+*  It means that nearly half of the `ny_noaa` data set have missing values.
+
+
+Therefore, missing data is a big issue. However, since the observation left is `r nrow(no_missing)`, which is big enough, removing the missing rows will not have a big problem as there are still enough data to draw conclusions
+
 
 
 ### 2. clean  data
