@@ -124,6 +124,13 @@ acc_1 %>%
 ```
 
 
+Description:
+* Within each day, the man tend to be more active from 6 am to around 10 pm and less active from 11 pm to 6 am. This is probably because he goes to sleep at around 11 pm and wakes up t aound 6 am.
+* There is a significant peak in pink around 11 am to 12 pm, which implies that the man is particularly active at noon on Sundays.
+* Another peak in various colors is around 7 pm to 10 pm, which means that the man is very active almost each day during this time period. In the peak, there seems to be more blue lines than other colored lines, implying that the man is more active on Fridays during this time period.
+
+
+
 
 
 ## Problem 3
