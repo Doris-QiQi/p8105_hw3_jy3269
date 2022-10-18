@@ -130,7 +130,6 @@ head(acc_1)
 
 **Description**:
 
-*  structure of the data set:
   * the `acc_1` data set has  `r nrow(acc_1)`  rows (observations) and  `r ncol(acc_1)` columns (variables)
   * the variables in `acc_1` include :  `r names(acc_1)`
   * the `weekday_vs_weekend` variable is a new one added to the original data set, showing whether the day is a weekday or a weekend.
@@ -285,6 +284,7 @@ noaa
 
 *  `noaa` has `r nrow(noaa)` rows and `r ncol(noaa)` columns.
 *  The variables in `noaa` are : `r names(noaa)`
+*  The key variables are `prcp` `snow` `snwd` `tmax` and `tmin`
 *  the units of precipitation, min and max temperature  are adjusted.
 
 
@@ -345,17 +345,17 @@ noaa %>%
 
 ```{r}
 
-tmax_tmin_plot <-                       # tmax vs tmin
+tmax_tmin_plot <-                         # tmax vs tmin
   noaa %>% 
   ggplot(aes(x = tmax,y = tmin)) +
-  geom_hex() +                          # use a hexagon plot
+  geom_hex() +                            # use a hexagon plot
   geom_smooth(se = FALSE,na.rm = TRUE) +
   labs(x = "tmax(C)",y = "tmin(C)",title = "tmax vs tmin") +
   theme(legend.text = element_text(size = 8),
-        legend.key.width=unit(1,'cm'))
+        legend.key.width = unit(1,'cm'))  # set the legend text size and width
 
   
-snow_density_plot <-                    # snow density
+snow_density_plot <-                      # snow density
   noaa %>% 
   filter(snow > 0 & snow < 100) %>% 
   mutate(year = factor(year)) %>% 
