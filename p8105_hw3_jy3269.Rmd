@@ -11,14 +11,98 @@ library(ggridges)
 library(patchwork)
 library(p8105.datasets)
 
+knitr::opts_chunk$set(
+	echo = TRUE,
+	warning = FALSE,
+	fig.width = 8, 
+  fig.height = 6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+
 ```
+
+
+## Problem 1
+
+#### Read in the data
+
+```{r}
+data("instacart")
+
+instacart = 
+  instacart %>% 
+  as_tibble(instacart)
+```
+
+#### Answer questions about the data
+
+This dataset contains `r nrow(instacart)` rows and `r ncol(instacart)` columns, with each row resprenting a single product from an instacart order. Variables include identifiers for user, order, and product; the order in which each product was added to the cart. There are several order-level variables, describing the day and time of the order, and number of days since prior order. Then there are several item-specific variables, describing the product name (e.g. Yogurt, Avocado), department (e.g. dairy and eggs, produce), and aisle (e.g. yogurt, fresh fruits), and whether the item has been ordered by this user in the past. In total, there are `r instacart %>% select(product_id) %>% distinct %>% count` products found in `r instacart %>% select(user_id, order_id) %>% distinct %>% count` orders from `r instacart %>% select(user_id) %>% distinct %>% count` distinct users.
+
+Below is a table summarizing the number of items ordered from aisle. In total, there are 134 aisles, with fresh vegetables and fresh fruits holding the most items ordered by far.
+
+```{r}
+instacart %>% 
+  count(aisle) %>% 
+  arrange(desc(n))
+```
+
+Next is a plot that shows the number of items ordered in each aisle. Here, aisles are ordered by ascending number of items.
+
+```{r}
+instacart %>% 
+  count(aisle) %>% 
+  filter(n > 10000) %>% 
+  mutate(aisle = fct_reorder(aisle, n)) %>% 
+  ggplot(aes(x = aisle, y = n)) + 
+  geom_point() + 
+  labs(title = "Number of items ordered in each aisle") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+```
+
+Our next table shows the three most popular items in aisles `baking ingredients`, `dog food care`, and `packaged vegetables fruits`, and includes the number of times each item is ordered in your table.
+
+```{r}
+instacart %>% 
+  filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) %>%
+  group_by(aisle) %>% 
+  count(product_name) %>% 
+  mutate(rank = min_rank(desc(n))) %>% 
+  filter(rank < 4) %>% 
+  arrange(desc(n)) %>%
+  knitr::kable()
+```
+
+Finally is a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week. This table has been formatted in an untidy manner for human readers. Pink Lady Apples are generally purchased slightly earlier in the day than Coffee Ice Cream, with the exception of day 5.
+
+```{r}
+instacart %>%
+  filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) %>%
+  group_by(product_name, order_dow) %>%
+  summarize(mean_hour = mean(order_hour_of_day)) %>%
+  spread(key = order_dow, value = mean_hour) %>%
+  knitr::kable(digits = 2)
+```
+
+
+
+
 
 ## Problem 2
 
 ### 1. import csv file
 ```{r}
 data_1 <- read_csv("./data/accel_data.csv")
-data_1
 
 ```
 
@@ -41,10 +125,10 @@ acc_1 <- data_1 %>%
     values_to = "activity_counts") %>%   # store the observed data in a new column names activity_counts
   mutate(minute = as.integer(minute))    # change data type
 
-acc_1
+head(acc_1)
 ```
 
-Description:
+**Description**:
 
 *  structure of the data set:
   * the `acc_1` data set has  `r nrow(acc_1)`  rows (observations) and  `r ncol(acc_1)` columns (variables)
@@ -72,7 +156,8 @@ acc_1 %>%
 ```
 
 
-Description of the table :
+**Description of the table** :
+
 *  The daily total activities tend to fluctuate within each week, thus there is no obvious trends.
 *  The daily total activity counts on Saturday in Week 4 and 5 are both 1440 which means the activity counts is 1 for each minute. The data seems abnormal. I suppose that there might be something wrong with the Accelerator that makes it unable to collect data correctly.
 
@@ -99,7 +184,8 @@ acc_1 %>%
 ```
 
 
-Description of the trend plot:
+**Description of the trend plot**:
+
 * In week 1 and 2, the total activity per day increases from Monday to Friday.
 * In Week 3 and 4, the fluctuations are more irregular.
 * Week 5 shows an approximately increasing trend from Monday to Friday.
@@ -112,7 +198,7 @@ Description of the trend plot:
 acc_1 %>%  
   group_by(day_id) %>%
   ggplot(aes(x = minute,y = activity_counts,color = day)) +
-  geom_line(alpha=.7) +
+  geom_line() +
   theme(legend.position = "bottom")+
   labs(
     title = "Daily Activity",
@@ -126,10 +212,11 @@ acc_1 %>%
 ```
 
 
-Description:
+**Description**:
+
 * Within each day, the man tend to be more active from 6 am to around 10 pm and less active from 11 pm to 6 am. This is probably because he goes to sleep at around 11 pm and wakes up t aound 6 am.
-* There is a significant peak in pink around 11 am to 12 pm, which implies that the man is particularly active at noon on Sundays.
-* Another peak in various colors is around 7 pm to 10 pm, which means that the man is very active almost each day during this time period. In the peak, there seems to be more blue lines than other colored lines, implying that the man is more active on Fridays during this time period.
+* There is a significant peak in yellow around 11 am to 12 pm, which implies that the man is particularly active at noon on Sundays.
+* Another peak in various colors is around 7 pm to 10 pm, which means that the man is very active almost each day during this time period. In the peak, there seems to be more green lines than other colored lines, implying that the man is more active on Fridays during this time period.
 
 
 
@@ -144,7 +231,7 @@ num_weather_station <- length(unique(ny_noaa$id))  # number of missing values
 
 no_missing = na.omit(ny_noaa)                      # data removed of the NAs
 num_no_missing <- nrow(no_missing)                 # number of rows without missing values
-missing_ proportion <- (nrow(ny_noaa) - nrow(no_missing))/nrow(ny_noaa)*100   # missing proportion
+missing_proportion <- (nrow(ny_noaa) - nrow(no_missing))/nrow(ny_noaa)*100   # missing proportion
 
 
 # missing proportion in each variables
@@ -155,9 +242,11 @@ ny_noaa %>%
 
 ```
 
-Description of the raw dataset `ny_noaa`:
+**Description of the raw dataset `ny_noaa`**:
+
 *  `ny_noaa` has  `r nrow(ny_noaa)` observations and  `r ncol(ny_noaa)` variables.
 *  The variables are : names(ny_noaa)
+
   * id: Weather station ID
   * date: Date of observation
   * prcp: Precipitation (tenths of mm)
@@ -165,12 +254,14 @@ Description of the raw dataset `ny_noaa`:
   * snwd: Snow depth (mm)
   * tmax: Maximum temperature (tenths of degrees C)
   * tmin: Minimum temperature (tenths of degrees C)
+  
 *  The key variables are `prcp` `snow` `snwd` `tmax` and `tmin`
 *  The observations ranging from 1981-01-01 to 2010-12-31
 *  There are `r length(unique(ny_noaa$id))` different weather stations.
 
 
-The missing value problem:
+**The missing value problem**:
+
 *  There are a total of `r nrow(ny_noaa)-nrow(no_missing)` rows that contains missing data, which is `r (nrow(ny_noaa)-nrow(no_missing))/nrow(ny_noaa)*100`% of the total observations. 
 *  It means that more than half of the `ny_noaa` data set have missing values.Therefore, missing data is a big issue. 
 *  The missing value proportion of the 5 key variables are shown in the table : 44% missing for max and min temperature , 23% for snow depth, 15% for snow, and 6% for precipitation.
@@ -207,6 +298,7 @@ noaa %>%
 
 ```
 
+
 The most commonly observed values of snowfall variable in the data set is 0, which implies that there is no snow for most of the time in New York.
 
 
@@ -236,7 +328,8 @@ noaa %>%
   theme(legend.position = "bottom")
 
 ```
-Description:
+
+**Description**
 
 *  The mean tmax in January is much lower than that in July. 
 *  The range of mean tmax in January is around -10 to 10 (degree C), in July is around 20 to 35 (degree C). Thus, Jan has a larger range than July.
@@ -251,41 +344,42 @@ Description:
 ## 5. plot tmax vs tmin +  distribution of snowfall
 
 ```{r}
+
 tmax_tmin_plot <-                       # tmax vs tmin
   noaa %>% 
   ggplot(aes(x = tmax,y = tmin)) +
   geom_hex() +                          # use a hexagon plot
-  geom_smooth(se = FALSE,na.rm = TRUE)
-  labs(
-    x = "tmax (degree C)",
-    y = "tmin (degree C)",
-    title = "tmax vs tmin ",
-    caption = "Data from ny_noaa"
-  )
+  geom_smooth(se = FALSE,na.rm = TRUE) +
+  labs(x = "tmax(C)",y = "tmin(C)",title = "tmax vs tmin") +
+  theme(legend.text = element_text(size = 8),
+        legend.key.width=unit(1,'cm'))
+
   
 snow_density_plot <-                    # snow density
   noaa %>% 
   filter(snow > 0 & snow < 100) %>% 
-  mutate(year = as.factor(year)) %>% 
-  ggplot(aes(x = snow, y = year,fill = year)) +
-  geom_density_ridges() +
+  mutate(year = factor(year)) %>% 
+  ggplot(aes(x = snow, y = year,fill = year)) + 
+  geom_density_ridges()+
   labs(
     y = "Year",
     x = "Snowfall (mm)",
-    title = "The distribution of snowfall",
-    caption = "Data from ny_noaa") +
-  theme_ridges() + theme(legend.position = "none")
+    title = "The distribution of snowfall")  + 
+  theme(legend.position = "none")
 
 
-tmax_tmin_plot + snow_density_plot
+ tmax_tmin_plot + snow_density_plot 
 
 
 ```
-Description:
-*  The left figure is a plot of tmax vs tmin from 1980 to 2010. It shows that most of the points fall into the center of the plot, where tmax ranges from 0 to 30 and tmin ranges from -10 to 20.
+
+**Description** 
+
+*  The left figure is a plot of tmax vs tmin from 1980 to 2010. It shows that most of the points fall into the center of the plot, where tmax ranges from 0 to 30 and tmin ranges from -15 to 20.
 * The right figure is the distribution of snowfall over the years and each curve represents a year. 
 * Although the distribution of snow are slightly different from year to year, they all share a similar pattern. 
 * The pattern shows that : the highest density is between 0 mm to 25 mm, and the lowest is greater than 90 mm. It means that the snowfall is usually between 0 mm to 25 mm and rarely over 90 mm.
+
 
 
 
